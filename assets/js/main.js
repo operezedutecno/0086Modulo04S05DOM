@@ -23,10 +23,10 @@ $(() => { //Función ready se ejecuta cuando el HTML es cargado completamente
                                     <h5 class="card-title">${item.nombre}</h5>
                                     <div>
                                         <span class="fw-bold">Precio: </span>
-                                        <span> $${item.precio}</span>
+                                        <span> $${item.precio.toLocaleString('es-CL')}</span>
                                     </div>
                                     <div class="mt-4 d-flex">
-                                        <input class="form-control" type="number" class="precio" value="0" readonly>
+                                        <input class="form-control" type="number" class="precio" value="1" readonly>
                                         <button class="btn btn-success cantidades aumenta">+</button>
                                         <button class="btn btn-danger cantidades disminuye">-</button>
                                         <button class="btn btn-primary btn-agregar" data-id="${item.id}">Añadir</button>
@@ -42,18 +42,27 @@ $(() => { //Función ready se ejecuta cuando el HTML es cargado completamente
     listarPrendas(prendas)
 
     const mostrarResumen = carrito => {
-        $("#resumen table").html("");
+        $("#resumen").html("");
         for (const item of carrito) {
-            $("#resumen table").append(`
-                <tr>
-                    <td>
-                        <div class="py-0">${item.nombre}</div>
-                        <div class="py-0"><b>Cantidad:</b> ${item.cantidad}</div>
-                        <div class="py-0"><b>Precio:</b> ${item.precio}</div>
-                    </td>
-                    
-                </tr>
+            $("#resumen").append(`
+                <div class="fila-resumen d-flex justify-content-between separador pt-2">
+                    <div>
+                        <div class="py-0"><a>${item.nombre}</a></div>
+                        <div class="py-0"><a><b>Cantidad:</b> ${item.cantidad}</a></div>
+                        <div class="py-0"><a><b>Precio:</b> $${item.precio.toLocaleString('es-CL')}</a></div>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-danger d-none1 remover" data-id="${item.id}">Remover</button>
+                    </div>
+                </div>
             `)
+            // $("#resumen table").append(`
+            //     <div class="d-flex align-items-end flex-column bd-highlight mb-3">
+            //         <button class="btn btn-danger btn-sm btn-eliminar cambiar" data-id="${item.id}">X</button>
+            //         <button class="btn btn-success btn-sm aumenta-carrito cambiar" data-id="${item.id}">+</button>
+            //         <button class="btn btn-warning btn-sm disminuye-carrito cambiar" data-id="${item.id}">-</button>
+            //     </div>
+            // `)
         }
     }
 
@@ -74,7 +83,7 @@ $(() => { //Función ready se ejecuta cuando el HTML es cargado completamente
 
     $(".disminuye").click(function() {
         let valor = $(this).siblings("input").val()
-        if(Number(valor) !== 0) {
+        if(Number(valor) !== 1) {
             valor--;
             $(this).siblings("input").val(valor)
         }
@@ -94,10 +103,32 @@ $(() => { //Función ready se ejecuta cuando el HTML es cargado completamente
         } else { // Caso donde la prenda SI está en el carrito.
             itemCarrito.cantidad += cantidad
         }
-        $(this).siblings("input").val(0)
+        $(this).siblings("input").val(1)
         mostrarResumen(carrito)
 
         const total = calcularTotal(carrito)
-        $("#monto-total").html(total)
+        $("#monto-total").text(`$${total.toLocaleString('es-CL')}`)
+    })
+
+    $(document).on("mouseenter", ".fila-resumen", function() {
+        // $(this).children("td:last-child").children("button").removeClass("d-none");
+    })
+
+    $(document).on("mouseleave", ".fila-resumen", function() {
+        // $(this).children("td:last-child").children("button").addClass("d-none");
+    })
+
+    $(document).on("click", ".remover", function() {
+        const idPrenda = $(this).attr("data-id")
+        if(confirm("¿Desea eliminar esta prenda del carrito?")) {
+            const index = carrito.findIndex(item => item.id == idPrenda)
+            if(index != -1) {
+                carrito.splice(index,1)
+            }
+        }
+        
+        mostrarResumen(carrito)
+        const total = calcularTotal(carrito)
+        $("#monto-total").text(`$${total.toLocaleString('es-CL')}`)
     })
 })

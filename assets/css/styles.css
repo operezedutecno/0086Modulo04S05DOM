@@ -5,3 +5,7 @@
 button.cantidades {
     width: 50px;
 }
+
+.separador {
+    border-bottom: #CCC 2px solid;
+}
