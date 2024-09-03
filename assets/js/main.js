@@ -56,13 +56,6 @@ $(() => { //Función ready se ejecuta cuando el HTML es cargado completamente
                     </div>
                 </div>
             `)
-            // $("#resumen table").append(`
-            //     <div class="d-flex align-items-end flex-column bd-highlight mb-3">
-            //         <button class="btn btn-danger btn-sm btn-eliminar cambiar" data-id="${item.id}">X</button>
-            //         <button class="btn btn-success btn-sm aumenta-carrito cambiar" data-id="${item.id}">+</button>
-            //         <button class="btn btn-warning btn-sm disminuye-carrito cambiar" data-id="${item.id}">-</button>
-            //     </div>
-            // `)
         }
     }
 
